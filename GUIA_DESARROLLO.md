@@ -152,6 +152,7 @@ refactor: Refactorización de código
 test: Añadir o modificar tests
 chore: Tareas de mantenimiento
 
+
 📄 Licencia
 [Definir licencia del proyecto]
 📧 Contacto

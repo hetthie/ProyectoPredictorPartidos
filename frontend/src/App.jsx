@@ -1,35 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const testConnection = async () => {
+    setLoading(true);
+    setError(null);
+    setResponse(null);
+
+    try {
+      const res = await fetch('http://localhost:3000/api/test');
+      
+      if (!res.ok) {
+        throw new Error('Error en la conexión con el backend');
+      }
+      
+      const data = await res.json();
+      setResponse(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+    <div className="app-container">
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        <h1 className="title">⚽ Predictor de Fútbol</h1>
+        <p className="subtitle">Sistema de Predicción de Partidos</p>
+        
+        <div className="test-section">
+          <button 
+            onClick={testConnection}
+            disabled={loading}
+            className="test-button"
+          >
+            {loading ? '🔄 Conectando...' : '🔌 Probar Conexión con Backend'}
+          </button>
+        </div>
+
+        {error && (
+          <div className="response-box error">
+            <h3>❌ Error</h3>
+            <p>{error}</p>
+            <small>Asegúrate de que el backend esté corriendo en puerto 3000</small>
+          </div>
+        )}
+
+        {response && (
+          <div className="response-box success">
+            <h3>✅ Respuesta del Backend</h3>
+            <div className="response-content">
+              <p><strong>Mensaje:</strong> {response.message}</p>
+              <p><strong>Estado:</strong> {response.status}</p>
+              <p><strong>Timestamp:</strong> {new Date(response.timestamp).toLocaleString()}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="info-section">
+          <h3>ℹ️ Información del Sistema</h3>
+          <ul>
+            <li>Frontend: React + Vite (Puerto 5173)</li>
+            <li>Backend: Node.js + Express (Puerto 3000)</li>
+            <li>ML: Python + UV</li>
+          </ul>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;

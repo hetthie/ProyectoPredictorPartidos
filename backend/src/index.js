@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Ruta de prueba
+// Rutas
 app.get('/', (req, res) => {
   res.json({ 
     message: '⚽ API Predictor de Fútbol funcionando!',
@@ -17,10 +17,13 @@ app.get('/', (req, res) => {
   });
 });
 
-// Ruta de salud
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date() });
 });
+
+// ✨ NUEVA RUTA DE PRUEBA
+const testRoutes = require('./routes/test');
+app.use('/api/test', testRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {
